@@ -1,15 +1,29 @@
-﻿namespace APBDcw3.Containers;
+﻿using APBDcw3.Exceptions;
+using APBDcw3.Interfaces;
 
-public class LiquidContainer : Container
+namespace APBDcw3.Containers;
+
+public class LiquidContainer : HazardousContainer
 {
-
-    public LiquidContainer(double cargoWeight, double height, double maxCapacity, string serialNumber) : base(cargoWeight, height, maxCapacity, serialNumber)
-        {
-        }
+    
+    public LiquidContainer(double cargoWeight, double height, double maxCapacity, bool isHazardous) : base(cargoWeight, height, maxCapacity, "L", isHazardous)
+    {
+  
+    }
     public override void Load(double cargoWeight)
     {
-        base.Load(cargoWeight);
+        double allowedCapacity = IsHazardous ? MaxCapacity * 0.5 : MaxCapacity * 0.9;
+
+        if (CargoWeight + cargoWeight > allowedCapacity)
+        {
+            if (IsHazardous)
+            {
+                NotifyHazard($"Attempted to load {cargoWeight}kg of hazardous material which exceeds the allowed 50% capacity for {SerialNumber}.");
+            }
+            throw new OverfillException("Loading this cargo would exceed the container's allowed capacity.");
+        }
+
+        CargoWeight += cargoWeight;
     }
 
-    
 }

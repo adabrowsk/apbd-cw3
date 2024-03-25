@@ -2,5 +2,5 @@ namespace APBDcw3.Interfaces;
 
 public interface IHazardNotifier
 {
-    void NotifyHazard();
+    void NotifyHazard(string message);
 }
